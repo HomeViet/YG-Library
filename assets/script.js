@@ -9,7 +9,7 @@ const shots = {
     src: "../Dị bảo/Kỳ bảo_Dị bảo.png",
     alt: "Màn danh sách Dị Bảo",
     caption:
-      "Màn chính dùng showcase ngang: mỗi Dị Bảo có tên, model/visual lớn, 5 biểu tượng tôi luyện phía dưới và điểm đánh giá tổng ở trung tâm."
+      "Màn chính dùng showcase ngang: mỗi Dị Bảo có tên, model lớn, 5 biểu tượng tôi luyện phía dưới và điểm đánh giá tổng ở trung tâm."
   },
   awake: {
     src: "../Dị bảo/Kỳ bảo_Dị bảo_Thức tỉnh.png",
@@ -26,13 +26,69 @@ const shots = {
 };
 
 const treasures = [
-  ["1", "Gậy Như Ý Kim Cô", "310003457", "310003463", "Ảnh chi tiết đang dùng item này làm ví dụ thuộc tính."],
-  ["2", "Kim Cương Trác", "310003458", "310003464", "Xuất hiện ở màn chính, model vòng lửa nổi bật."],
-  ["3", "Thương Hỏa Tiêm", "310003459", "310003465", "Xuất hiện ở màn chính, model thương lửa."],
-  ["4", "Phong Hỏa Luân", "310003460", "310003466", "Xuất hiện ở mép phải carousel trong ảnh màn chính."],
-  ["5", "Đao Ba Mũi Hai Lưỡi", "310003461", "310003467", "Dùng chung logic 5 cấp tôi luyện và thức tỉnh."],
-  ["6", "Rìu Khai Sơn", "310003462", "310003468", "Có thể phân giải theo item config hiện có."],
-  ["7", "Quạt Âm Dương", "310004397", "310004474", "Nội dung mở rộng sau, có creature lock/show/awake riêng."]
+  {
+    id: "1",
+    name: "Gậy Như Ý Kim Cô",
+    activeItem: "310003457",
+    refineItem: "310003463",
+    baseAttr: "101",
+    awakeAttr: "107",
+    creatures: "110002513 / 110002514 / 110002515"
+  },
+  {
+    id: "2",
+    name: "Kim Cương Trác",
+    activeItem: "310003458",
+    refineItem: "310003464",
+    baseAttr: "201",
+    awakeAttr: "207",
+    creatures: "110002516 / 110002517 / 110002518"
+  },
+  {
+    id: "3",
+    name: "Thương Hỏa Tiêm",
+    activeItem: "310003459",
+    refineItem: "310003465",
+    baseAttr: "301",
+    awakeAttr: "307",
+    creatures: "110002519 / 110002520 / 110002521"
+  },
+  {
+    id: "4",
+    name: "Phong Hỏa Luân",
+    activeItem: "310003460",
+    refineItem: "310003466",
+    baseAttr: "401",
+    awakeAttr: "407",
+    creatures: "110002522 / 110002523 / 110002524"
+  },
+  {
+    id: "5",
+    name: "Đao Ba Mũi Hai Lưỡi",
+    activeItem: "310003461",
+    refineItem: "310003467",
+    baseAttr: "501",
+    awakeAttr: "507",
+    creatures: "110002525 / 110002526 / 110002527"
+  },
+  {
+    id: "6",
+    name: "Rìu Khai Sơn",
+    activeItem: "310003462",
+    refineItem: "310003468",
+    baseAttr: "601",
+    awakeAttr: "607",
+    creatures: "110002528 / 110002529 / 110002530"
+  },
+  {
+    id: "7",
+    name: "Quạt Âm Dương",
+    activeItem: "310004397",
+    refineItem: "310004474",
+    baseAttr: "801",
+    awakeAttr: "807",
+    creatures: "110002689 / 110002690 / 110002691"
+  }
 ];
 
 const image = document.querySelector("#screenImage");
@@ -56,13 +112,15 @@ const rows = document.querySelector("#treasureRows");
 if (rows) {
   rows.innerHTML = treasures
     .map(
-      ([id, name, item, refine, note]) => `
+      (item) => `
         <tr>
-          <td>${id}</td>
-          <td><strong>${name}</strong></td>
-          <td><code>${item}</code></td>
-          <td><code>${refine}</code></td>
-          <td>${note}</td>
+          <td>${item.id}</td>
+          <td><strong>${item.name}</strong></td>
+          <td><code>${item.activeItem}</code></td>
+          <td><code>${item.refineItem}</code></td>
+          <td><code>${item.baseAttr}</code></td>
+          <td><code>${item.awakeAttr}</code></td>
+          <td><code>${item.creatures}</code></td>
         </tr>
       `
     )

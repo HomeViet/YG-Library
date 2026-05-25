@@ -18,47 +18,88 @@
     <nav>
       <a href="../index.html">Trang chủ</a>
       <a href="#overview">Tổng quan</a>
+      <a href="#source">Nguồn dữ liệu</a>
       <a href="#screens">Ảnh ingame</a>
-      <a href="#loop">Vòng lặp</a>
-      <a href="#systems">Thiết kế hệ thống</a>
+      <a href="#flow">Luồng chơi</a>
+      <a href="#states">Trạng thái</a>
       <a href="#content">Nội dung</a>
-      <a href="#rules">Rule & lỗi</a>
-      <a href="#implementation">Config mapping</a>
+      <a href="#qa">QA</a>
+      <a href="#ops">CS/Operator</a>
+      <a href="#open">Câu hỏi mở</a>
     </nav>
   </aside>
 
   <main>
     <section id="overview" class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">Kỳ Bảo / Hạng mục đặc biệt</p>
+        <p class="eyebrow">Kỳ Bảo / Tính năng sưu tầm tăng trưởng</p>
         <h1>Dị Bảo</h1>
         <p class="lead">
-          Dị Bảo là nhánh sưu tầm và bồi dưỡng bảo vật dị giới trong hệ Kỳ Bảo.
-          Người chơi kích hoạt từng bảo vật, tôi luyện 5 cấp, thức tỉnh để mở thuộc tính mạnh hơn,
-          sau đó nhận cộng minh theo số lượng Dị Bảo đã thức tỉnh.
+          Dị Bảo là nhánh đặc biệt trong hệ Kỳ Bảo, dùng cho các bảo vật dị giới có tiến trình riêng:
+          kích hoạt, tôi luyện 5 cấp, thức tỉnh, sau đó tính vào cộng minh. Theo config hiện có,
+          tính năng mở sớm hơn Kỳ Bảo thường và không thấy ràng buộc nghề nghiệp trong cấu hình Dị Bảo.
         </p>
+        <div class="tag-row">
+          <span>DEV: rõ rule triển khai</span>
+          <span>Tester: có checklist trạng thái</span>
+          <span>Operator: có giải thích người chơi</span>
+        </div>
       </div>
       <div class="fact-grid">
         <article>
-          <span>Mở tính năng</span>
+          <span>Điều kiện mở</span>
           <strong>Cấp 30</strong>
-          <small>Server ngày 1, trigger OtherworldTreasure</small>
+          <small>Server ngày 1, trigger <code>OtherworldTreasure</code></small>
         </article>
         <article>
-          <span>Số Dị Bảo</span>
+          <span>Số lượng hiện có</span>
           <strong>7</strong>
-          <small>Đang có trong otherworld_treasure_config</small>
+          <small>Lấy từ <code>otherworld_treasure_config.xml</code></small>
         </article>
         <article>
-          <span>Tôi luyện</span>
-          <strong>5 cấp</strong>
-          <small>Mỗi cấp dùng nguyên liệu riêng theo Dị Bảo</small>
+          <span>Tiến trình mỗi món</span>
+          <strong>1 + 5 + 1</strong>
+          <small>Kích hoạt, 5 cấp tôi luyện, 1 lần thức tỉnh</small>
         </article>
         <article>
-          <span>Cộng minh</span>
+          <span>Mốc cộng minh</span>
           <strong>3 / 4 / 5 / 6</strong>
-          <small>Mốc theo số Dị Bảo đã thức tỉnh</small>
+          <small>Dựa trên số Dị Bảo đã thức tỉnh</small>
         </article>
+      </div>
+    </section>
+
+    <section id="source" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Traceability</p>
+        <h2>Nguồn Dữ Liệu & Mức Tin Cậy</h2>
+      </div>
+      <div class="source-grid">
+        <article>
+          <strong>Config chính</strong>
+          <p><code>XML_Config_Data_VN/otherworld_treasure_config.xml</code></p>
+          <span>Danh sách Dị Bảo, item kích hoạt, item tôi luyện, attr ID, creature hiển thị, mốc cộng minh.</span>
+        </article>
+        <article>
+          <strong>Điều kiện mở</strong>
+          <p><code>XML_Config_Data_VN/trigger_cfg.xml</code> → <code>OtherworldTreasure</code></p>
+          <span>Mở cấp 30, server ngày 1. Kỳ Bảo thường mở cấp 70 nên Dị Bảo cần được xem là nhánh riêng.</span>
+        </article>
+        <article>
+          <strong>Thông báo lỗi</strong>
+          <p><code>Sheet_Config_Data_VN/sheet_name_message_code</code></p>
+          <span>Nhóm mã <code>-56700</code> đến <code>-56706</code> và <code>71400</code> cho trạng thái bất thường.</span>
+        </article>
+        <article>
+          <strong>Ảnh ingame</strong>
+          <p><code>Library/Dị bảo/*.png</code></p>
+          <span>Xác nhận vị trí HUD, tab Dị Bảo, popup thức tỉnh và popup cộng minh.</span>
+        </article>
+      </div>
+      <div class="callout">
+        <strong>Nguyên tắc viết GDD:</strong>
+        tài liệu này ưu tiên config và ảnh ingame hiện có. Những phần chưa có dữ liệu, ví dụ giá trị thuộc tính thật trong bảng attr,
+        được đưa vào mục Câu hỏi mở thay vì tự suy diễn.
       </div>
     </section>
 
@@ -83,77 +124,102 @@
       </div>
     </section>
 
-    <section id="loop" class="section">
+    <section id="flow" class="section">
       <div class="section-head">
-        <p class="eyebrow">Core loop</p>
+        <p class="eyebrow">Player flow</p>
         <h2>Luồng Người Chơi</h2>
       </div>
       <div class="flow">
         <article>
           <span>1</span>
-          <h3>Nhận Dị Bảo</h3>
-          <p>Người chơi nhận item kích hoạt từ hoạt động như Giang Hồ Mạo Hiểm hoặc sự kiện vận hành.</p>
+          <h3>Mở hệ thống</h3>
+          <p>Nhân vật đạt cấp 30 và server ngày 1. UI hiển thị lối vào Kỳ Bảo/Dị Bảo theo trigger.</p>
         </article>
         <article>
           <span>2</span>
-          <h3>Kích hoạt</h3>
-          <p>Dùng item tương ứng để mở Dị Bảo. Thuộc tính bản thể bắt đầu cộng vĩnh viễn.</p>
+          <h3>Sở hữu item</h3>
+          <p>Người chơi nhận item loại <code>OtherworldTreasureActive</code>. Nguồn nhận đang được mô tả trong item là Giang Hồ Mạo Hiểm.</p>
         </article>
         <article>
           <span>3</span>
-          <h3>Tôi luyện</h3>
-          <p>Tiêu hao Tôi Nguyên Ly Hỏa riêng của từng bảo vật để nâng 5 cấp thuộc tính tôi luyện.</p>
+          <h3>Kích hoạt</h3>
+          <p>Dùng đúng item kích hoạt để mở Dị Bảo. Sau bước này, thuộc tính bản thể bắt đầu có hiệu lực.</p>
         </article>
         <article>
           <span>4</span>
-          <h3>Thức tỉnh</h3>
-          <p>Khi đạt tôi luyện tối đa, thức tỉnh để nhận thuộc tính thức tỉnh và trạng thái hiển thị cao cấp.</p>
+          <h3>Tôi luyện</h3>
+          <p>Mỗi Dị Bảo có 5 cấp, mỗi cấp tiêu hao 1 item tôi luyện riêng. Config không thể hiện tỷ lệ thất bại.</p>
         </article>
         <article>
           <span>5</span>
-          <h3>Cộng minh</h3>
-          <p>Số lượng Dị Bảo thức tỉnh đạt mốc sẽ mở bonus toàn cục, tạo mục tiêu sưu tầm dài hạn.</p>
+          <h3>Thức tỉnh</h3>
+          <p>Khi đủ 5 cấp tôi luyện, người chơi thức tỉnh một lần để mở thuộc tính thức tỉnh và tính vào cộng minh.</p>
         </article>
       </div>
     </section>
 
-    <section id="systems" class="section split">
-      <div>
-        <div class="section-head">
-          <p class="eyebrow">System design</p>
-          <h2>Cấu Trúc Tính Năng</h2>
-        </div>
-        <div class="state-list">
-          <article>
-            <strong>Chưa kích hoạt</strong>
-            <p>Hiển thị bảo vật ở trạng thái khóa hoặc chưa sở hữu. CTA chính là nguồn nhận/kích hoạt nếu có item.</p>
-          </article>
-          <article>
-            <strong>Đã kích hoạt</strong>
-            <p>Mở thuộc tính bản thể và mở cụm tôi luyện. Bảo vật xuất hiện trên bệ showcase trong màn chính.</p>
-          </article>
-          <article>
-            <strong>Đang tôi luyện</strong>
-            <p>Mỗi lần nâng thêm một dòng thuộc tính cố định. Không dùng tỉ lệ thất bại để giữ trải nghiệm chắc chắn.</p>
-          </article>
-          <article>
-            <strong>Đã thức tỉnh</strong>
-            <p>Mở thuộc tính thức tỉnh, tính vào mốc cộng minh và có thể phát thông báo toàn server.</p>
-          </article>
-        </div>
+    <section id="states" class="section">
+      <div class="section-head">
+        <p class="eyebrow">State-based design</p>
+        <h2>Ma Trận Trạng Thái</h2>
       </div>
-      <aside class="design-note">
-        <h3>Vai trò trong game</h3>
-        <p>
-          Dị Bảo nên được xem là nhánh tăng trưởng sưu tầm, không phải trang bị phải thay liên tục.
-          Giá trị chính nằm ở việc người chơi thấy rõ tiến độ từng món và có động lực hoàn thiện bộ.
-        </p>
-        <dl>
-          <div><dt>Độ phức tạp</dt><dd>Thấp đến trung bình</dd></div>
-          <div><dt>Rủi ro cân bằng</dt><dd>Thuộc tính cộng vĩnh viễn cần kiểm soát theo server age</dd></div>
-          <div><dt>Điểm bán</dt><dd>Model lớn, hiệu ứng lửa, popup thức tỉnh, cộng minh</dd></div>
-        </dl>
-      </aside>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Trạng thái</th>
+              <th>Điều kiện</th>
+              <th>UI/CTA</th>
+              <th>Gameplay impact</th>
+              <th>Chặn lỗi liên quan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Chưa mở tính năng</strong></td>
+              <td>Chưa đạt trigger <code>OtherworldTreasure</code></td>
+              <td>Ẩn hoặc khóa lối vào</td>
+              <td>Không được kích hoạt/tôi luyện/thức tỉnh</td>
+              <td><code>-56700</code>, <code>71400</code></td>
+            </tr>
+            <tr>
+              <td><strong>Chưa kích hoạt</strong></td>
+              <td>Hệ thống đã mở nhưng Dị Bảo chưa active</td>
+              <td>Hiển thị model khóa hoặc trạng thái chưa sở hữu; CTA nguồn nhận/kích hoạt</td>
+              <td>Chưa cộng thuộc tính bản thể</td>
+              <td><code>-56703</code></td>
+            </tr>
+            <tr>
+              <td><strong>Đã kích hoạt</strong></td>
+              <td>Dùng đúng item kích hoạt</td>
+              <td>Hiển thị trên showcase, mở chi tiết thuộc tính và nút tôi luyện</td>
+              <td>Cộng thuộc tính bản thể theo <code>treasure_attr_id</code></td>
+              <td><code>-56701</code> nếu kích hoạt lại</td>
+            </tr>
+            <tr>
+              <td><strong>Đang tôi luyện</strong></td>
+              <td>Đã kích hoạt, refine level từ 0 đến 4</td>
+              <td>Nút tôi luyện sáng nếu đủ item; hiển thị cấp sau</td>
+              <td>Mỗi cấp cộng attr theo <code>refine_attr_id</code></td>
+              <td>Thiếu item dùng rule tiêu hao chung của hệ thống item</td>
+            </tr>
+            <tr>
+              <td><strong>Tôi luyện tối đa</strong></td>
+              <td>Refine level = 5</td>
+              <td>Khóa tôi luyện, mở điều kiện thức tỉnh</td>
+              <td>Đã nhận đủ thuộc tính tôi luyện</td>
+              <td><code>-56704</code></td>
+            </tr>
+            <tr>
+              <td><strong>Đã thức tỉnh</strong></td>
+              <td>Đã tôi luyện tối đa và thức tỉnh thành công</td>
+              <td>Button hiển thị “Đã thức tỉnh”, có thể đổi creature/hiệu ứng</td>
+              <td>Cộng <code>awake_attr_id</code>, tính vào cộng minh</td>
+              <td><code>-56705</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section id="content" class="section">
@@ -168,12 +234,18 @@
               <th>ID</th>
               <th>Tên Dị Bảo</th>
               <th>Item kích hoạt</th>
-              <th>Nguyên liệu tôi luyện</th>
-              <th>Ghi chú UI</th>
+              <th>Item tôi luyện</th>
+              <th>Attr bản thể</th>
+              <th>Attr thức tỉnh</th>
+              <th>Creature lock/show/awake</th>
             </tr>
           </thead>
           <tbody id="treasureRows"></tbody>
         </table>
+      </div>
+      <div class="callout">
+        Mỗi Dị Bảo hiện có đúng 5 dòng <code>refine_level</code>, mỗi dòng tiêu hao 1 item tôi luyện tương ứng.
+        GDD không ghi giá trị thuộc tính cụ thể vì cần đối chiếu bảng attr <code>341000606</code>.
       </div>
     </section>
 
@@ -184,64 +256,136 @@
       </div>
       <div class="resonance-grid">
         <article>
-          <span>3 Dị Bảo</span>
+          <span>3 Dị Bảo thức tỉnh</span>
           <strong>Sơ Minh</strong>
-          <p>Mốc mở sớm để người chơi bắt đầu thấy giá trị sưu tầm.</p>
+          <p>Mở attr cộng minh <code>701</code>. Đây là mốc khuyến khích người chơi bắt đầu hoàn thiện bộ.</p>
         </article>
         <article>
-          <span>4 Dị Bảo</span>
+          <span>4 Dị Bảo thức tỉnh</span>
           <strong>Linh Tê</strong>
-          <p>Ảnh ingame đang hiển thị mốc này với trạng thái hoàn thành 7/4.</p>
+          <p>Mở attr cộng minh <code>702</code>. Ảnh ingame cho thấy mốc 4 có thể đã hoàn thành vượt yêu cầu.</p>
         </article>
         <article>
-          <span>5 Dị Bảo</span>
+          <span>5 Dị Bảo thức tỉnh</span>
           <strong>Cộng Hưởng</strong>
-          <p>Tăng dần chỉ số toàn cục, phù hợp vai trò mid-goal.</p>
+          <p>Mở attr cộng minh <code>703</code>. Mốc trung gian, phù hợp làm điểm dừng vận hành.</p>
         </article>
         <article class="highlight">
-          <span>6 Dị Bảo</span>
+          <span>6 Dị Bảo thức tỉnh</span>
           <strong>Cộng Triệt</strong>
-          <p>Ảnh ingame cho thấy trạng thái đang có hiệu lực, dùng làm mốc showcase cao nhất hiện tại.</p>
+          <p>Mở attr cộng minh <code>704</code>. Ảnh ingame đang highlight trạng thái “Đang có hiệu lực”.</p>
         </article>
       </div>
     </section>
 
-    <section id="rules" class="section">
+    <section id="qa" class="section">
       <div class="section-head">
-        <p class="eyebrow">Rules</p>
-        <h2>Rule & Thông Báo Lỗi</h2>
+        <p class="eyebrow">QA focus</p>
+        <h2>Checklist Cho Tester</h2>
       </div>
-      <div class="rule-grid">
-        <article><strong>Chưa mở tính năng</strong><span>Tính năng kỳ bảo dị giới chưa mở.</span></article>
-        <article><strong>Kích hoạt trùng</strong><span>Kỳ bảo dị giới này đã được kích hoạt, không thể kích hoạt lặp lại.</span></article>
-        <article><strong>Chưa kích hoạt</strong><span>Kỳ bảo dị giới này chưa kích hoạt, không thể bồi dưỡng.</span></article>
-        <article><strong>Tôi luyện tối đa</strong><span>Kỳ bảo dị giới này đã tôi luyện tối đa, không thể tiếp tục bồi dưỡng.</span></article>
-        <article><strong>Thức tỉnh thiếu điều kiện</strong><span>Kỳ bảo dị giới này chưa tôi luyện đầy, không thể giác tỉnh.</span></article>
-        <article><strong>Thức tỉnh trùng</strong><span>Kỳ bảo dị giới này đã giác tỉnh, giác tỉnh lặp lại.</span></article>
+      <div class="qa-grid">
+        <article>
+          <h3>Happy path</h3>
+          <ul>
+            <li>Cấp 30, server ngày 1 mở được tính năng.</li>
+            <li>Dùng item kích hoạt đúng Dị Bảo, thuộc tính bản thể có hiệu lực.</li>
+            <li>Tôi luyện 5 lần, mỗi lần trừ đúng 1 item refine.</li>
+            <li>Đủ 5 cấp mới thức tỉnh được.</li>
+            <li>Thức tỉnh xong tăng số lượng cộng minh và phát notice nếu có cấu hình.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Trạng thái bất thường</h3>
+          <ul>
+            <li>Dùng item khi tính năng chưa mở.</li>
+            <li>Kích hoạt lại Dị Bảo đã active.</li>
+            <li>Tôi luyện Dị Bảo chưa active.</li>
+            <li>Tôi luyện khi đã max 5 cấp.</li>
+            <li>Thức tỉnh khi chưa đủ 5 cấp.</li>
+            <li>Thức tỉnh lại Dị Bảo đã awake.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Rủi ro exploit</h3>
+          <ul>
+            <li>Spam dùng item kích hoạt nhiều lần để cộng thuộc tính lặp.</li>
+            <li>Client hiển thị đủ item nhưng server trừ item thất bại.</li>
+            <li>Race condition khi bấm tôi luyện/thức tỉnh liên tục.</li>
+            <li>Rollback trạng thái nhưng không rollback attr cộng thêm.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Điểm cần log</h3>
+          <ul>
+            <li>ID người chơi, ID Dị Bảo, action: activate/refine/awake.</li>
+            <li>Refine level trước và sau.</li>
+            <li>Item tiêu hao trước và sau.</li>
+            <li>Attr cộng minh trước và sau khi awake.</li>
+          </ul>
+        </article>
       </div>
     </section>
 
-    <section id="implementation" class="section">
-      <div class="section-head">
-        <p class="eyebrow">Config mapping</p>
-        <h2>Mapping Từ Config</h2>
+    <section id="ops" class="section split">
+      <div>
+        <div class="section-head">
+          <p class="eyebrow">Operator / CS</p>
+          <h2>Giải Thích Cho Người Chơi</h2>
+        </div>
+        <div class="state-list">
+          <article>
+            <strong>Vì sao chưa thấy Dị Bảo?</strong>
+            <p>Tính năng cần đạt điều kiện mở. Theo config hiện tại là cấp 30 và server ngày 1.</p>
+          </article>
+          <article>
+            <strong>Vì sao không tôi luyện được?</strong>
+            <p>Dị Bảo phải được kích hoạt trước và chưa đạt cấp tôi luyện tối đa. Mỗi món dùng nguyên liệu tôi luyện riêng.</p>
+          </article>
+          <article>
+            <strong>Vì sao không thức tỉnh được?</strong>
+            <p>Dị Bảo phải tôi luyện đủ 5 cấp. Nếu đã thức tỉnh rồi thì không thể thức tỉnh lại.</p>
+          </article>
+          <article>
+            <strong>Cộng minh tính thế nào?</strong>
+            <p>Dựa trên số Dị Bảo đã thức tỉnh, không dựa trên số Dị Bảo chỉ mới kích hoạt.</p>
+          </article>
+        </div>
       </div>
-      <div class="mapping">
+      <aside class="design-note">
+        <h3>Thông điệp vận hành</h3>
+        <p>
+          Dị Bảo là mục tiêu sưu tầm dài hạn. Nên truyền thông theo bộ bảo vật và mốc cộng minh,
+          tránh chỉ nói “tăng lực chiến” vì người chơi cần hiểu vì sao phải thức tỉnh nhiều món.
+        </p>
+        <dl>
+          <div><dt>Nguồn nhận hiện thấy</dt><dd>Item mô tả nhận qua Giang Hồ Mạo Hiểm.</dd></div>
+          <div><dt>Giới hạn</dt><dd>Không thấy config reset hoặc giảm cấp.</dd></div>
+          <div><dt>Hiển thị nổi bật</dt><dd>Showcase ngang, hiệu ứng lửa, popup cộng minh.</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <section id="open" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Audit needed</p>
+        <h2>Câu Hỏi Mở</h2>
+      </div>
+      <div class="open-grid">
         <article>
-          <h3>Trigger</h3>
-          <p><code>trigger_cfg.xml</code>: <code>OtherworldTreasure</code>, mở cấp 30, server ngày 1.</p>
+          <strong>Giá trị thuộc tính thật</strong>
+          <p>Config Dị Bảo chỉ trỏ tới attr ID. Cần đối chiếu bảng attr <code>341000606</code> để ghi chính xác chỉ số và lực chiến.</p>
         </article>
         <article>
-          <h3>Main config</h3>
-          <p><code>otherworld_treasure_config.xml</code>: danh sách Dị Bảo, item kích hoạt, cấp tôi luyện, attr bản thể, attr thức tỉnh, cộng minh.</p>
+          <strong>Nguồn nhận vận hành</strong>
+          <p>Item có mô tả Giang Hồ Mạo Hiểm, nhưng GDD cần bảng drop/sự kiện nếu muốn xác định sản lượng mỗi ngày.</p>
         </article>
         <article>
-          <h3>Item</h3>
-          <p><code>Item/310003457...</code>: item_type <code>EItemChild_OtherworldTreasureActive</code> cho kích hoạt và <code>EItemChild_OtherworldTreasureRefine</code> cho nguyên liệu.</p>
+          <strong>Quy tắc hiển thị khi chưa sở hữu</strong>
+          <p>Ảnh hiện có chủ yếu là trạng thái đã kích hoạt/đã thức tỉnh. Cần ảnh trạng thái khóa để chốt CTA.</p>
         </article>
         <article>
-          <h3>Notice</h3>
-          <p><code>111841_ConfMsgCode.xml</code>: broadcast khi người chơi thức tỉnh Dị Bảo.</p>
+          <strong>Quan hệ với Kỳ Bảo thường</strong>
+          <p>Dị Bảo mở cấp 30, Kỳ Bảo thường mở cấp 70. Cần xác nhận UI có cho vào trực tiếp không hay vẫn phụ thuộc panel Kỳ Bảo.</p>
         </article>
       </div>
     </section>

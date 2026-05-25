@@ -384,6 +384,76 @@ h3 {
   color: var(--muted);
 }
 
+.related-shots {
+  margin-top: 18px;
+}
+
+.related-shots h3 {
+  margin-bottom: 10px;
+  color: var(--gold);
+  font-size: 1rem;
+}
+
+.full-span {
+  grid-column: 1 / -1;
+}
+
+.shot-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.shot-strip figure,
+.step-shot {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.shot-strip img,
+.step-shot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #0d1514;
+}
+
+.shot-strip figcaption,
+.step-shot figcaption {
+  padding: 8px 10px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.step-shot {
+  margin-top: 12px;
+}
+
+.step-shot img {
+  aspect-ratio: 16 / 10;
+}
+
+.step-shot.is-placeholder,
+.shot-strip .is-missing {
+  min-height: 126px;
+}
+
+.step-shot.is-placeholder div,
+.shot-strip .is-missing div {
+  display: grid;
+  place-items: center;
+  min-height: 86px;
+  color: var(--muted);
+  background:
+    linear-gradient(135deg, rgba(239, 106, 81, 0.12), rgba(255, 255, 255, 0.035));
+  border-bottom: 1px solid var(--line);
+  font-weight: 800;
+}
+
 .flow {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -392,7 +462,7 @@ h3 {
 
 .flow article {
   position: relative;
-  min-height: 190px;
+  min-height: 310px;
   padding: 18px;
 }
 
@@ -566,6 +636,10 @@ tbody tr:hover {
   .resonance-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .shot-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px) {
@@ -582,7 +656,8 @@ tbody tr:hover {
   .mapping,
   .source-grid,
   .qa-grid,
-  .open-grid {
+  .open-grid,
+  .shot-strip {
     grid-template-columns: 1fr;
   }
 

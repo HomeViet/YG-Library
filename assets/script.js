@@ -1,24 +1,24 @@
-const shots = {
+﻿const shots = {
   entry: {
-    src: "../Dị bảo/Kỳ bảo_Vị trí tính năng.png",
+    src: "../KyBao_DiBao/KyBao_MainUI.png",
     alt: "Vị trí mở tính năng Dị Bảo trong HUD Kỳ Bảo",
     caption:
       "Entry point nằm trong cụm HUD bên phải, qua icon Kỳ Bảo. Đây là lối vào cấp hệ thống, sau đó người chơi chọn tab Dị Bảo trong panel."
   },
   main: {
-    src: "../Dị bảo/Kỳ bảo_Dị bảo.png",
+    src: "../KyBao_DiBao/KyBao_DiBao_MainTab.png",
     alt: "Màn danh sách Dị Bảo",
     caption:
       "Màn chính dùng showcase ngang: mỗi Dị Bảo có tên, model lớn, 5 biểu tượng tôi luyện phía dưới và điểm đánh giá tổng ở trung tâm."
   },
   awake: {
-    src: "../Dị bảo/Kỳ bảo_Dị bảo_Thức tỉnh.png",
+    src: "../KyBao_DiBao/KyBao_DiBao_NangCap.png",
     alt: "Popup thuộc tính và thức tỉnh Dị Bảo",
     caption:
       "Popup chi tiết chia rõ thuộc tính bản thể, thuộc tính tôi luyện và thuộc tính thức tỉnh. Trạng thái đã kích hoạt/đã thức tỉnh được thể hiện ngay trên từng dòng."
   },
   resonance: {
-    src: "../Dị bảo/Kỳ bảo-Dị bảo_Cộng minh.png",
+    src: "../KyBao_DiBao/KyBao_DiBao_CongMinh.png",
     alt: "Popup cộng minh thức tỉnh Dị Bảo",
     caption:
       "Cộng minh biến mục tiêu sưu tầm thành sức mạnh toàn cục. UI card hóa từng mốc và highlight mốc đang có hiệu lực."
@@ -126,3 +126,5 @@ if (rows) {
     )
     .join("");
 }
+
+

@@ -1,4 +1,4 @@
-﻿const shots = {
+const shots = {
   entry: {
     src: "../KyBao_DiBao/KyBao_MainUI.png",
     alt: "Vị trí mở tính năng Dị Bảo trong HUD Kỳ Bảo",
@@ -126,5 +126,3 @@ if (rows) {
     )
     .join("");
 }
-
-

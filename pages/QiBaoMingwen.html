@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GDD Webview - Minh Văn Kỳ Bảo</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <aside class="sidebar" aria-label="Điều hướng GDD">
+    <div class="brand">
+      <span class="brand-mark">MV</span>
+      <div>
+        <strong>Minh Văn</strong>
+        <span>Kỳ Bảo / GDD Webview</span>
+      </div>
+    </div>
+    <nav>
+      <a href="../index.html">Trang chủ</a>
+      <a href="#overview">Tổng quan</a>
+      <a href="#source">Nguồn dữ liệu</a>
+      <a href="#screens">Ảnh ingame</a>
+      <a href="#flow">Luồng chơi</a>
+      <a href="#states">Trạng thái</a>
+      <a href="#mingwen">Minh Văn</a>
+      <a href="#star">Thăng Tinh</a>
+      <a href="#qa">QA</a>
+      <a href="#ops">CS/Operator</a>
+      <a href="#open">Câu hỏi mở</a>
+    </nav>
+  </aside>
+
+  <main>
+    <section id="overview" class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Kỳ Bảo / Khắc văn và tăng sao</p>
+        <h1>Minh Văn Kỳ Bảo</h1>
+        <p class="lead">
+          Minh Văn là nhánh tăng trưởng sau khi người chơi sở hữu đúng Kỳ Bảo Chân-Bạo Vương Quỷ Diện Giáp
+          và nâng Kỳ Bảo đến đủ sao. Mỗi lần khắc văn sinh ra 6 dòng thuộc tính, có thể bảo tồn kết quả cũ
+          hoặc nhận bộ thuộc tính mới.
+        </p>
+        <div class="tag-row">
+          <span>DEV: rule rõ theo config</span>
+          <span>Tester: có ma trận trạng thái</span>
+          <span>Operator: giải thích đúng UI</span>
+        </div>
+      </div>
+      <div class="fact-grid">
+        <article>
+          <span>Điều kiện nền</span>
+          <strong>Kỳ Bảo cấp 70</strong>
+          <small>Trigger <code>QiBao</code>, server ngày 20</small>
+        </article>
+        <article>
+          <span>Thăng Tinh</span>
+          <strong>1-10 sao</strong>
+          <small>Mở theo <code>QiBaoStar</code>, server ngày 38</small>
+        </article>
+        <article>
+          <span>Số dòng mỗi lần</span>
+          <strong>6 dòng</strong>
+          <small><code>qibao_mingwen_config.xml</code> → <code>citiao_count</code></small>
+        </article>
+        <article>
+          <span>Chi phí khắc</span>
+          <strong>1 + 20 + 20000</strong>
+          <small>Mảnh Kỳ Bảo, Cát Tẩy Linh, Bạc lượng</small>
+        </article>
+      </div>
+    </section>
+
+    <section id="source" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Traceability</p>
+        <h2>Nguồn Dữ Liệu & Mức Tin Cậy</h2>
+      </div>
+      <div class="source-grid">
+        <article>
+          <strong>Config Minh Văn</strong>
+          <p><code>XML_Config_Data_VN/qibao_mingwen_config.xml</code></p>
+          <span>Số dòng, pool thuộc tính, xác suất theo số lần, bảo hộ may mắn và chi phí khắc văn.</span>
+        </article>
+        <article>
+          <strong>Config Kỳ Bảo</strong>
+          <p><code>XML_Config_Data_VN/qibao_config.xml</code></p>
+          <span>Mở Kỳ Bảo, vị trí xuất chiến/phụ, Thăng Tinh 1-10 sao và điều kiện ngày server/cấp nhân vật.</span>
+        </article>
+        <article>
+          <strong>Điều kiện mở</strong>
+          <p><code>XML_Config_Data_VN/trigger_cfg.xml</code></p>
+          <span><code>QiBao</code> mở cấp 70 ngày 20; <code>QiBaoStar</code> mở cấp 70 ngày 38.</span>
+        </article>
+        <article>
+          <strong>Ảnh ingame</strong>
+          <p><code>Library/KyBao_MinhVan/*.png</code></p>
+          <span>Xác nhận tab Minh văn, Thăng Tinh, tooltip, trạng thái thiếu nguyên liệu, giới hạn ngày và tối đa sao.</span>
+        </article>
+      </div>
+      <div class="callout">
+        Tài liệu này chỉ ghi các rule có bằng chứng từ config và ảnh. Phần chưa thấy trong source, ví dụ cách khóa dòng khi bấm bảo tồn,
+        được đưa vào Câu hỏi mở thay vì tự suy diễn.
+      </div>
+    </section>
+
+    <section id="screens" class="section">
+      <div class="section-head">
+        <p class="eyebrow">UI reference</p>
+        <h2>Ảnh Ingame & Ý Nghĩa Thiết Kế</h2>
+      </div>
+      <div class="screen-layout">
+        <div class="shot-picker" role="tablist" aria-label="Chọn ảnh ingame">
+          <button class="shot-tab is-active" data-shot="locked" type="button">Chưa đủ sao</button>
+          <button class="shot-tab" data-shot="empty" type="button">Thiếu nguyên liệu</button>
+          <button class="shot-tab" data-shot="roll" type="button">Có kết quả mới</button>
+          <button class="shot-tab" data-shot="tip" type="button">Tooltip</button>
+          <button class="shot-tab" data-shot="star" type="button">Thăng Tinh</button>
+          <button class="shot-tab" data-shot="limit" type="button">Giới hạn ngày</button>
+          <button class="shot-tab" data-shot="max" type="button">Đầy sao</button>
+        </div>
+        <figure class="screen-preview">
+          <img id="screenImage" src="../KyBao_MinhVan/KyBao_MinhVan_Initial.png" alt="Minh Văn chưa đủ điều kiện sao">
+          <figcaption id="screenCaption">
+            Khi Kỳ Bảo chưa đủ sao, tab Minh văn hiển thị nút điều hướng về mặc trang bị và nhắc cần tăng Chân-Bạo Vương Quỷ Diện Giáp đến đầy sao.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="flow" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Player flow</p>
+        <h2>Luồng Người Chơi</h2>
+      </div>
+      <div class="flow">
+        <article>
+          <span>1</span>
+          <h3>Mở Kỳ Bảo</h3>
+          <p>Nhân vật đạt cấp 70, server ngày 20, mở hệ Kỳ Bảo qua trigger <code>QiBao</code>.</p>
+        </article>
+        <article>
+          <span>2</span>
+          <h3>Trang bị đúng Kỳ Bảo</h3>
+          <p>Minh Văn hiện gắn với Kỳ Bảo phụ Chân-Bạo Vương Quỷ Diện Giáp, tương ứng item <code>310002682</code>.</p>
+        </article>
+        <article>
+          <span>3</span>
+          <h3>Thăng Tinh</h3>
+          <p>Người chơi tăng sao Kỳ Bảo từ 1 đến 10. Mốc sao chịu giới hạn ngày server và cấp nhân vật theo config.</p>
+        </article>
+        <article>
+          <span>4</span>
+          <h3>Khắc Minh Văn</h3>
+          <p>Khi đủ điều kiện và đủ nguyên liệu, bấm Minh văn để sinh 6 dòng thuộc tính mới.</p>
+        </article>
+        <article>
+          <span>5</span>
+          <h3>Bảo tồn hoặc nhận mới</h3>
+          <p>UI cho phép giữ kết quả hiện tại hoặc nhận kết quả mới. Quy tắc khóa từng dòng chưa thấy trong config.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="states" class="section">
+      <div class="section-head">
+        <p class="eyebrow">State-based design</p>
+        <h2>Ma Trận Trạng Thái</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Trạng thái</th>
+              <th>Điều kiện</th>
+              <th>UI/CTA</th>
+              <th>Gameplay impact</th>
+              <th>QA cần kiểm</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Chưa mở Kỳ Bảo</strong></td>
+              <td>Chưa đạt <code>QiBao</code></td>
+              <td>Ẩn/khóa lối vào Kỳ Bảo</td>
+              <td>Không thể vào Minh Văn</td>
+              <td>Cấp 69, server ngày 19</td>
+            </tr>
+            <tr>
+              <td><strong>Chưa mở Thăng Tinh</strong></td>
+              <td>Đã có Kỳ Bảo nhưng chưa đạt <code>QiBaoStar</code></td>
+              <td>Tab Thăng Tinh chưa mở hoặc bị chặn</td>
+              <td>Không thể tăng sao để mở Minh Văn</td>
+              <td>Cấp 70, ngày server 37</td>
+            </tr>
+            <tr>
+              <td><strong>Chưa đủ sao</strong></td>
+              <td>Chân-Bạo Vương Quỷ Diện Giáp chưa đạt mốc yêu cầu</td>
+              <td>Hiện nút "Tiến đến mặc trang bị"</td>
+              <td>Không sinh thuộc tính Minh Văn</td>
+              <td>Đúng câu nhắc trong ảnh <code>Initial</code></td>
+            </tr>
+            <tr>
+              <td><strong>Thiếu nguyên liệu</strong></td>
+              <td>Thiếu mảnh hoặc Cát Tẩy Linh hoặc Bạc lượng</td>
+              <td>Nút Minh văn vẫn hiện, số lượng thiếu đổi màu</td>
+              <td>Không trừ tài nguyên, không đổi kết quả</td>
+              <td>Ảnh <code>0Roll</code>: Cát Tẩy Linh 0/20</td>
+            </tr>
+            <tr>
+              <td><strong>Có thể khắc</strong></td>
+              <td>Đủ điều kiện, đủ tài nguyên</td>
+              <td>Nút Minh văn sáng</td>
+              <td>Sinh 6 dòng thuộc tính mới theo pool config</td>
+              <td>Trừ đúng 1 mảnh, 20 Cát Tẩy Linh, 20000 Bạc lượng</td>
+            </tr>
+            <tr>
+              <td><strong>Có kết quả mới</strong></td>
+              <td>Vừa khắc xong</td>
+              <td>Hiện hai vùng thuộc tính và nút Bảo Tồn/Minh văn</td>
+              <td>Người chơi quyết định giữ cũ hoặc nhận mới</td>
+              <td>Không mất kết quả cũ trước khi xác nhận</td>
+            </tr>
+            <tr>
+              <td><strong>Đầy sao</strong></td>
+              <td>Kỳ Bảo đạt sao 10</td>
+              <td>Thăng Tinh báo "Sao kỳ bảo đã đầy"</td>
+              <td>Không tăng sao tiếp, vẫn có thể khắc Minh Văn nếu đủ điều kiện</td>
+              <td>Ảnh <code>Max</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="mingwen" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Config rule</p>
+        <h2>Rule Minh Văn</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nhóm</th>
+              <th>Config</th>
+              <th>Ý nghĩa gameplay</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Số dòng</strong></td>
+              <td><code>citiao_count="6"</code></td>
+              <td>Mỗi lần Minh văn sinh đúng 6 dòng thuộc tính.</td>
+            </tr>
+            <tr>
+              <td><strong>Bảng thuộc tính</strong></td>
+              <td><code>attribute_table_id="341000612"</code></td>
+              <td>Giá trị cuối cần đối chiếu bảng thuộc tính này khi DEV/QA kiểm lực chiến.</td>
+            </tr>
+            <tr>
+              <td><strong>Dòng cùng cấp</strong></td>
+              <td><code>same_level_citiao_count="2"</code></td>
+              <td>Cho phép tối đa 2 dòng loại cấp cộng thêm cùng cấp, theo config hiện có.</td>
+            </tr>
+            <tr>
+              <td><strong>May mắn</strong></td>
+              <td><code>luck_const</code>, <code>add_luck</code>, <code>take_luck</code>, <code>save_luck</code></td>
+              <td>Mỗi lần roll có cơ chế tích/tiêu/giữ may mắn cho dòng đặc biệt; UI cần hiển thị nhất quán nếu có thanh may mắn.</td>
+            </tr>
+            <tr>
+              <td><strong>Chi phí</strong></td>
+              <td><code>consume</code></td>
+              <td>Mỗi lần tiêu hao 1 mảnh Chân-Bạo Vương Quỷ Diện Giáp, 20 Cát Tẩy Linh và 20000 Bạc lượng.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Loại dòng</th>
+              <th>Số lượng config</th>
+              <th>Nội dung</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Thuộc tính cơ bản</strong></td>
+              <td>10 dòng</td>
+              <td>Sinh mệnh, Tấn công, Phòng ngự, Chính xác, Né tránh, Tấn công võ công, Phòng ngự võ công, PvP Bonus, Chính xác võ công, Né tránh võ công.</td>
+            </tr>
+            <tr>
+              <td><strong>Thuộc tính minh khế</strong></td>
+              <td>24 dòng</td>
+              <td>8 loại minh khế, mỗi loại có sơ cấp/trung cấp/cao cấp tương ứng Tím/Cam/Đỏ.</td>
+            </tr>
+            <tr>
+              <td><strong>Cộng thêm minh khế</strong></td>
+              <td>24 dòng</td>
+              <td>8 loại minh khế, mỗi loại có +1/+2/+3; rate lần lượt 2000/4000/6000 trong config.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="resonance-grid">
+        <article>
+          <span>8 loại minh khế</span>
+          <strong>Phá Quân, Thiết Bích, Chân nguyên, Đoạt Mệnh, Chiến ý, Thiểm kích, Hóa kình, Hộ tâm</strong>
+        </article>
+        <article>
+          <span>Pool xác suất</span>
+          <strong>201 mốc roll</strong>
+          <small>Từ lần 1 đến lần 2000, càng về sau pool và tỷ lệ dòng cao cấp thay đổi theo <code>rand</code>.</small>
+        </article>
+        <article>
+          <span>Nguyên liệu chính</span>
+          <strong>Chân-Bạo Vương Quỷ Diện Giáp Mảnh</strong>
+          <small>Item <code>310002750</code>, cũng là kết quả phân giải item <code>310002682</code>.</small>
+        </article>
+      </div>
+    </section>
+
+    <section id="star" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Progression</p>
+        <h2>Thăng Tinh Kỳ Bảo</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Sao</th>
+              <th>Cấp nhân vật</th>
+              <th>Ngày server</th>
+              <th>Cộng thuộc tính thường</th>
+              <th>Cộng thuộc tính Chân</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>-</td><td>38</td><td>-</td><td>-</td></tr>
+            <tr><td>2</td><td>-</td><td>38</td><td>1.5%</td><td>8%</td></tr>
+            <tr><td>3</td><td>80</td><td>55</td><td>3%</td><td>16%</td></tr>
+            <tr><td>4</td><td>80</td><td>55</td><td>4.5%</td><td>24%</td></tr>
+            <tr><td>5</td><td>100</td><td>55</td><td>6%</td><td>32%</td></tr>
+            <tr><td>6</td><td>100</td><td>106</td><td>7.5%</td><td>40%</td></tr>
+            <tr><td>7</td><td>120</td><td>106</td><td>9%</td><td>48%</td></tr>
+            <tr><td>8</td><td>120</td><td>106</td><td>10.5%</td><td>56%</td></tr>
+            <tr><td>9</td><td>130</td><td>106</td><td>12%</td><td>64%</td></tr>
+            <tr><td>10</td><td>130</td><td>106</td><td>13.5%</td><td>72%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        Ảnh reference cho thấy UI chặn tăng sao khi chưa tới ngày mở mốc tiếp theo và báo "25 ngày sau có thể tiếp tục tăng sao".
+        Với mốc sao 10, UI báo đầy sao và không cho tăng tiếp.
+      </div>
+    </section>
+
+    <section id="qa" class="section">
+      <div class="section-head">
+        <p class="eyebrow">QA checklist</p>
+        <h2>Trường Hợp Cần Kiểm</h2>
+      </div>
+      <div class="check-grid">
+        <article>
+          <strong>Happy path</strong>
+          <p>Đủ cấp, đủ ngày server, có Chân-Bạo Vương Quỷ Diện Giáp, đủ sao và đủ tài nguyên. Bấm Minh văn sinh 6 dòng, trừ đúng tài nguyên.</p>
+        </article>
+        <article>
+          <strong>Thiếu tài nguyên</strong>
+          <p>Thiếu từng loại: mảnh, Cát Tẩy Linh, Bạc lượng. Không được đổi kết quả, không trừ phần tài nguyên còn lại.</p>
+        </article>
+        <article>
+          <strong>Giới hạn ngày</strong>
+          <p>Ở ngày 105 không được lên sao 6; ngày 106 mới mở mốc 6-10 theo config.</p>
+        </article>
+        <article>
+          <strong>Bảo tồn</strong>
+          <p>Sau khi có kết quả mới, bấm Bảo Tồn phải giữ bộ cũ. Bấm Minh văn tiếp tục phải xử lý theo rule xác nhận hiện hành.</p>
+        </article>
+        <article>
+          <strong>Đầy sao</strong>
+          <p>Kỳ Bảo sao 10 không được tăng sao tiếp; nút/thông báo phải khớp ảnh <code>KyBao_ThangSao_Max.png</code>.</p>
+        </article>
+        <article>
+          <strong>Chống exploit</strong>
+          <p>Spam click Minh văn/Bảo Tồn không được trừ tài nguyên nhiều lần hoặc làm mất trạng thái thuộc tính hiện tại.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="ops" class="section">
+      <div class="section-head">
+        <p class="eyebrow">CS / Operator</p>
+        <h2>Giải Thích Cho Người Chơi</h2>
+      </div>
+      <div class="ops-panel">
+        <p>
+          Minh Văn Kỳ Bảo chỉ dùng được khi Kỳ Bảo đúng loại và đủ sao. Nếu giao diện báo cần tăng sao,
+          người chơi phải quay lại tab Thăng Tinh và nâng Chân-Bạo Vương Quỷ Diện Giáp trước.
+        </p>
+        <p>
+          Mỗi lần Minh văn tiêu hao mảnh Chân-Bạo Vương Quỷ Diện Giáp, Cát Tẩy Linh và Bạc lượng để tạo bộ 6 dòng thuộc tính mới.
+          Nếu chưa hài lòng, người chơi có thể giữ bộ cũ bằng nút Bảo Tồn.
+        </p>
+        <p>
+          Một số mốc sao bị khóa theo ngày mở server. Khi UI báo còn số ngày chờ, đây là giới hạn tiến trình server, không phải lỗi tài khoản.
+        </p>
+      </div>
+    </section>
+
+    <section id="open" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Missing information</p>
+        <h2>Câu Hỏi Mở</h2>
+      </div>
+      <ol class="open-list">
+        <li>Rule nhận kết quả mới sau khi roll: bấm "Minh văn" lần kế tiếp có tự xác nhận thay thế hay cần popup xác nhận?</li>
+        <li>UI có cho khóa riêng từng dòng thuộc tính không? Config hiện chỉ thấy "Bảo Tồn" tổng thể, chưa thấy rule khóa dòng.</li>
+        <li>Điều kiện "đầy sao" để mở Minh Văn là sao 10 hay chỉ một mốc thấp hơn? Ảnh initial ghi "đầy sao", config cần đối chiếu source code để xác nhận.</li>
+        <li>Các mã lỗi message cho Minh Văn chưa được tìm thấy trong lượt rà này; cần source code hoặc bảng message cụ thể nếu muốn checklist lỗi đầy đủ.</li>
+      </ol>
+    </section>
+  </main>
+
+  <script>
+    const shots = {
+      locked: {
+        src: "../KyBao_MinhVan/KyBao_MinhVan_Initial.png",
+        alt: "Minh Văn chưa đủ điều kiện sao",
+        caption: "Khi Kỳ Bảo chưa đủ sao, tab Minh văn hiển thị nút điều hướng về mặc trang bị và nhắc cần tăng Chân-Bạo Vương Quỷ Diện Giáp đến đầy sao."
+      },
+      empty: {
+        src: "../KyBao_MinhVan/KyBao_MinhVan_0Roll.png",
+        alt: "Minh Văn thiếu Cát Tẩy Linh",
+        caption: "Trạng thái thiếu nguyên liệu: Cát Tẩy Linh hiển thị 0/20, không nên trừ mảnh hoặc Bạc lượng nếu thao tác bị chặn."
+      },
+      roll: {
+        src: "../KyBao_MinhVan/KyBao_MinhVan_iRoll.png",
+        alt: "Minh Văn có kết quả thuộc tính mới",
+        caption: "Sau khi roll, UI hiển thị thuộc tính Minh Văn mới ở khung phải, điểm đánh giá và hai lựa chọn Bảo Tồn hoặc Minh văn tiếp."
+      },
+      tip: {
+        src: "../KyBao_MinhVan/KyBao_MinhVan_Tooltips.png",
+        alt: "Tooltip Minh văn Kỳ Bảo",
+        caption: "Tooltip mô tả đúng logic: sau khi Chân-Bạo Vương Quỷ Diện Giáp đủ sao có thể Minh văn, mỗi lần nhận 6 thuộc tính."
+      },
+      star: {
+        src: "../KyBao_MinhVan/KyBao_ThangSao_Initial.png",
+        alt: "Thăng Tinh Kỳ Bảo",
+        caption: "Thăng Tinh hiển thị sao hiện tại, sao kế tiếp, tăng trưởng thuộc tính, kỹ năng mở theo sao và nguyên liệu cần tiêu hao."
+      },
+      limit: {
+        src: "../KyBao_MinhVan/KyBao_ThangSao_Limit.png",
+        alt: "Thăng Tinh bị giới hạn ngày server",
+        caption: "Khi mốc kế tiếp chưa mở theo ngày server, UI báo thời gian chờ thay vì cho tăng sao tiếp."
+      },
+      max: {
+        src: "../KyBao_MinhVan/KyBao_ThangSao_Max.png",
+        alt: "Kỳ Bảo đã đầy sao",
+        caption: "Ở sao 10, UI báo đã đầy sao và không cho tăng thêm."
+      }
+    };
+
+    const image = document.getElementById("screenImage");
+    const caption = document.getElementById("screenCaption");
+    document.querySelectorAll(".shot-tab").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".shot-tab").forEach((tab) => tab.classList.remove("is-active"));
+        button.classList.add("is-active");
+        const shot = shots[button.dataset.shot];
+        image.src = shot.src;
+        image.alt = shot.alt;
+        caption.textContent = shot.caption;
+      });
+    });
+  </script>
+</body>
+</html>
